@@ -1,6 +1,7 @@
 package com.sinensia.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -56,9 +57,6 @@ public class ProductoRestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        //PrintWriter escritorRespuesta = response.getWriter();
-        //response.setContentType("application/json;charset=UTF-8");
         
         BufferedReader bufRead = request.getReader();
         StringBuilder rJson = new StringBuilder();
@@ -69,8 +67,12 @@ public class ProductoRestController extends HttpServlet {
         Gson gson = new Gson();
         Producto nuevoP = gson.fromJson(rJson.toString(), Producto.class);
         servProd.insertar(nuevoP);
-       
-            
+        
+        PrintWriter escritorRespuesta = response.getWriter();
+        response.setContentType("application/json;charset=UTF-8");
+        
+        String JsonResp = gson.toJson(nuevoP);
+        escritorRespuesta.println(JsonResp);
     }
         
     }
