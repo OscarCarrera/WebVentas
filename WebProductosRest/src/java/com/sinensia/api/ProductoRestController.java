@@ -17,9 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 //Decoradores en forma de anotación, descriptores de despliegue
 @WebServlet(asyncSupported = true, urlPatterns = "/api/productos")
 public class ProductoRestController extends HttpServlet {
+    
+    private ServicioProductosSingleton servProd;
+    
+    @Override
+    public void init() {
+        servProd = ServicioProductosSingleton.getInstancia();
+    }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         PrintWriter escritorRespuesta=response.getWriter();
         response.setContentType("application/json;charset=UTF-8");
@@ -46,4 +53,26 @@ public class ProductoRestController extends HttpServlet {
         
     }
 
-}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        //PrintWriter escritorRespuesta = response.getWriter();
+        //response.setContentType("application/json;charset=UTF-8");
+        
+        BufferedReader bufRead = request.getReader();
+        StringBuilder rJson = new StringBuilder();
+        for (String linea = bufRead.readLine();linea != null; linea = bufRead.readLine()){
+        rJson.append(linea);
+        }
+        bufRead.close();
+        Gson gson = new Gson();
+        Producto nuevoP = gson.fromJson(rJson.toString(), Producto.class);
+        servProd.insertar(nuevoP);
+       
+            
+    }
+        
+    }
+    
+
